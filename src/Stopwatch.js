@@ -1,30 +1,47 @@
 import "./Stopwatch.css"
 import { useState, useEffect } from "react";
 function Stopwatch () {
-    const [seconds, setSeconds] = useState(0);
-    const [minutes, setMinutes] = useState(0);
-    const [hours, setHours] = useState(0);
+    const [time, setTime] = useState(0);
+    const [isRunning, setIsRunning] = useState(false);
+
+    function formatTime() {
+        const seconds = String(time%60).padStart(2, "0");
+        const minutes = String(Math.floor((time%3600)/60)).padStart(2, "0");
+        const hours = String(Math.floor(time/3600)).padStart(2, "0");
+        return `${hours}:${minutes}:${seconds}`;
+    }
 
     useEffect(() => {
-        let timerId = setTimeout(() => {
-            setSeconds(seconds+1);
-            if(seconds===59) {
-                setSeconds(0);
-                setMinutes(minutes+1);
-                if(minutes===59) {
-                    setMinutes(0);
-                    setHours(hours+1);
-                }
-            }
-        }, 1000);
-        return () => {clearTimeout(timerId);}
+        if(isRunning) {
+            let intervalId = setInterval(() => {
+                setTime(time+1);
+            }, 1000);
+
+            return () => {clearInterval(intervalId);}
+        }
         
-    }, [seconds, minutes, hours]);
+    }, [isRunning, time])
+
+    function start() {
+        setIsRunning(true);
+    }
+
+    function pause() {
+        setIsRunning(false);
+    }
+
+    function reset() {
+        setIsRunning(false);
+        setTime(0);
+    }
 
     return (
         <div className="stopwatch-box">
-            <h1>Stopwatch</h1>
-            <h2 className="stopwatch">{hours}:{minutes}:{seconds}</h2>
+            <h2>Stopwatch</h2>
+            <h1>{formatTime()}</h1>
+            <button className="stopwatch-btn" onClick={start}>Start</button>
+            <button className="stopwatch-btn" onClick={pause}>Pause</button>
+            <button className="stopwatch-btn" onClick={reset}>Reset</button>
         </div>
     )
 }
