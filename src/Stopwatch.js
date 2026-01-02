@@ -14,13 +14,13 @@ function Stopwatch () {
     useEffect(() => {
         if(isRunning) {
             let intervalId = setInterval(() => {
-                setTime(time+1);
+                setTime(time => time+1);
             }, 1000);
 
             return () => {clearInterval(intervalId);}
         }
         
-    }, [isRunning, time])
+    }, [isRunning])
 
     function start() {
         setIsRunning(true);
