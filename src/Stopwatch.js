@@ -1,8 +1,9 @@
 import "./Stopwatch.css"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 function Stopwatch () {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
+    const intervalRef = useRef(null);
 
     function formatTime() {
         const seconds = String(time%60).padStart(2, "0");
@@ -13,13 +14,12 @@ function Stopwatch () {
 
     useEffect(() => {
         if(isRunning) {
-            let intervalId = setInterval(() => {
+            intervalRef.current = setInterval(() => {
                 setTime(time => time+1);
             }, 1000);
 
-            return () => {clearInterval(intervalId);}
+            return () => {clearInterval(intervalRef.current);}
         }
-        
     }, [isRunning])
 
     function start() {
